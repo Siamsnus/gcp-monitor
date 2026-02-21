@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Consciousness Monitor — Live GCP Network Data</title>
+<meta name="description" content="Real-time visualization of the Global Consciousness Project. Monitor 65+ random number generators worldwide for anomalous coherence during major world events. Live data from Princeton's EGG network.">
+<meta name="keywords" content="Global Consciousness Project, GCP, random number generator, network coherence, EGG project, Princeton, noosphere, consciousness research, GCP live, GCP dot">
+<meta property="og:title" content="Global Consciousness Monitor — Live Network Data">
+<meta property="og:description" content="Watch 65+ random number generators worldwide in real time. Do they respond when the world pays attention?">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://siamsnus.github.io/gcp-monitor/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* Index-specific styles */
+.hook{
+  max-width:740px;margin:32px auto 0;text-align:center;
+  padding:24px 32px;
+  background:linear-gradient(135deg, rgba(52,211,153,0.06) 0%, rgba(96,165,250,0.04) 100%);
+  border:1px solid rgba(52,211,153,0.12);border-radius:12px;
+}
+.hook p{font-size:15px;color:var(--text-secondary);line-height:1.8}
+.hook strong{color:var(--text-primary);font-weight:500}
+
+.reading-guide{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:0 0 40px;border-radius:12px;overflow:hidden}
+.reading-level{padding:16px 12px;text-align:center;font-size:12px}
+.reading-level .level-color{width:28px;height:28px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'Space Mono',monospace}
+.reading-level .level-label{font-weight:600;margin-bottom:2px;font-size:13px}
+.reading-level .level-desc{color:var(--text-secondary);font-size:11px;line-height:1.4}
+
+.gauge-section{display:grid;grid-template-columns:1fr;gap:20px;margin:40px 0}
+.gauge-main{display:flex;flex-direction:column;align-items:center;padding:48px 28px}
+.gauge-ring{position:relative;width:240px;height:240px;margin-bottom:24px}
+.gauge-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.gauge-track{fill:none;stroke:var(--border);stroke-width:8;stroke-linecap:round}
+.gauge-fill{fill:none;stroke-width:8;stroke-linecap:round;stroke-dasharray:628;stroke-dashoffset:628;transition:stroke-dashoffset 2s cubic-bezier(0.4,0,0.2,1),stroke 1s;filter:drop-shadow(0 0 12px currentColor)}
+.gauge-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.gauge-value{font-family:'Space Mono',monospace;font-size:48px;font-weight:700;line-height:1}
+.gauge-unit{font-size:12px;color:var(--text-secondary);margin-top:4px;letter-spacing:1px}
+.gauge-status{font-size:18px;font-weight:500;margin-bottom:4px;letter-spacing:0.5px}
+.gauge-description{color:var(--text-secondary);font-size:13px;text-align:center;max-width:340px}
+.gauge-updated{font-family:'Space Mono',monospace;font-size:11px;color:var(--text-dim);margin-top:16px}
+.status-normal{color:var(--accent-blue)}.status-elevated{color:var(--accent-green)}.status-high{color:var(--accent-amber)}.status-very-high{color:var(--accent-red)}
+
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+.stat-card{text-align:center;padding:20px 16px}
+.stat-value{font-family:'Space Mono',monospace;font-size:28px;font-weight:700;margin-bottom:4px}
+.stat-label{font-size:12px;color:var(--text-secondary)}
+
+.timeline-section{margin-bottom:32px}
+.chart-container{position:relative;height:220px;margin-top:16px}
+canvas{width:100%!important;height:100%!important}
+.chart-legend{display:flex;gap:20px;justify-content:center;margin-top:12px;font-size:12px;color:var(--text-secondary)}
+.chart-legend span{display:flex;align-items:center;gap:6px}
+.legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+.map-section{margin-bottom:32px}
+.map-container{position:relative;width:100%;aspect-ratio:2/1;background:var(--bg-deep);border-radius:12px;overflow:hidden;margin-top:16px;border:1px solid var(--border)}
+.map-container svg{width:100%;height:100%}
+.egg-dot{cursor:pointer;transition:r 0.2s}.egg-dot:hover{r:5}
+.egg-tooltip{position:absolute;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;pointer-events:none;opacity:0;transition:opacity 0.2s;z-index:10;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+.egg-tooltip.visible{opacity:1}
+.egg-tooltip .tt-name{font-weight:700;margin-bottom:2px}
+.egg-tooltip .tt-stat{color:var(--text-secondary);font-family:'Space Mono',monospace}
+
+.cta-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin:40px 0}
+.cta-card{padding:20px;text-align:center;text-decoration:none;transition:border-color 0.3s,background 0.3s}
+.cta-card:hover{border-color:rgba(52,211,153,0.3);background:var(--bg-card-hover)}
+.cta-card h3{font-size:14px;margin-bottom:6px;color:var(--accent-cyan)}
+.cta-card p{font-size:12px;color:var(--text-secondary);line-height:1.5}
+
+@media(max-width:768px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.reading-guide{grid-template-columns:repeat(2,1fr)}.stats-row{grid-template-columns:1fr 1fr}.stat-value{font-size:22px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">⊛ GCP Monitor</a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Live Data</a></li>
+      <li><a href="what-is-gcp.html">What Is GCP?</a></li>
+      <li><a href="events.html">Famous Events</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="related.html">Related</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+  <header class="page-header">
+    <div class="site-badge">Live Network Data</div>
+    <h1>Global <strong>Consciousness</strong> Monitor</h1>
+    <p class="subtitle">Real-time visualization of the Global Consciousness Project — a network of random number generators spanning 65+ locations worldwide, maintained by Princeton researchers since 1998.</p>
+  </header>
+
+  <div class="hook">
+    <p>Right now, <strong>65 devices around the world are generating random numbers</strong> — numbers that should be completely unpredictable, governed by quantum physics. Most of the time, they are. But during events that capture the world's attention — disasters, celebrations, moments of shared emotion — <strong>the numbers sometimes become slightly less random</strong>. Nobody knows why. The data below shows what's happening right now.</p>
+  </div>
+
+  <!-- How to Read -->
+  <div style="margin:40px 0 8px">
+    <div class="card-label" style="text-align:center;margin-bottom:16px">How to Read the Display</div>
+  </div>
+  <div class="reading-guide">
+    <div class="reading-level card" style="text-align:center">
+      <div class="level-color" style="background:rgba(96,165,250,0.2);color:var(--accent-blue)">1.0</div>
+      <div class="level-label" style="color:var(--accent-blue)">Normal</div>
+      <div class="level-desc">Network behaving randomly, as expected. Nothing unusual.</div>
+    </div>
+    <div class="reading-level card" style="text-align:center">
+      <div class="level-color" style="background:rgba(52,211,153,0.2);color:var(--accent-green)">1.1</div>
+      <div class="level-label" style="color:var(--accent-green)">Elevated</div>
+      <div class="level-desc">Slight trend toward non-randomness. May or may not be meaningful.</div>
+    </div>
+    <div class="reading-level card" style="text-align:center">
+      <div class="level-color" style="background:rgba(251,191,36,0.2);color:var(--accent-amber)">1.2</div>
+      <div class="level-label" style="color:var(--accent-amber)">High</div>
+      <div class="level-desc">Notable deviation. Often seen during events engaging mass attention.</div>
+    </div>
+    <div class="reading-level card" style="text-align:center">
+      <div class="level-color" style="background:rgba(248,113,113,0.2);color:var(--accent-red)">1.4+</div>
+      <div class="level-label" style="color:var(--accent-red)">Very High</div>
+      <div class="level-desc">Rare. Strong deviation — the kind seen during major world events.</div>
+    </div>
+  </div>
+
+  <!-- Gauge -->
+  <section class="gauge-section animate-in">
+    <div class="card gauge-main" id="gauge-card">
+      <div class="card-label">Network Coherence Level</div>
+      <div class="gauge-ring">
+        <svg viewBox="0 0 220 220">
+          <circle class="gauge-track" cx="110" cy="110" r="100"/>
+          <circle class="gauge-fill" id="gauge-arc" cx="110" cy="110" r="100"/>
+        </svg>
+        <div class="gauge-center">
+          <div class="gauge-value" id="gauge-value">—</div>
+          <div class="gauge-unit">NETWORK VARIANCE</div>
+        </div>
+      </div>
+      <div class="gauge-status" id="gauge-status">Loading...</div>
+      <div class="gauge-description" id="gauge-desc">Connecting to data feed...</div>
+      <div class="gauge-updated" id="gauge-time"></div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="stats-row animate-in delay-1">
+    <div class="card stat-card"><div class="stat-value" id="stat-eggs" style="color:var(--accent-cyan)">—</div><div class="stat-label">Active Generators</div></div>
+    <div class="card stat-card"><div class="stat-value" id="stat-z" style="color:var(--accent-green)">—</div><div class="stat-label">Stouffer Z-Score</div></div>
+    <div class="card stat-card"><div class="stat-value" id="stat-variance" style="color:var(--accent-amber)">—</div><div class="stat-label">Network Variance</div></div>
+    <div class="card stat-card"><div class="stat-value" id="stat-countries" style="color:var(--accent-purple)">—</div><div class="stat-label">Countries</div></div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="timeline-section animate-in delay-2">
+    <div class="card">
+      <div class="card-label">24-Hour Timeline</div>
+      <h2 class="section-title">Network Variance Over Time</h2>
+      <p class="section-subtitle">Cumulative deviation from expected randomness across the EGG network</p>
+      <div class="chart-container"><canvas id="timeline-chart"></canvas></div>
+      <div class="chart-legend">
+        <span><span class="legend-dot" style="background:var(--accent-green)"></span> Network Variance</span>
+        <span><span class="legend-dot" style="background:rgba(251,191,36,0.4)"></span> 2σ Significance</span>
+        <span><span class="legend-dot" style="background:rgba(248,113,113,0.3)"></span> 3σ High Significance</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Map -->
+  <section class="map-section animate-in delay-3">
+    <div class="card">
+      <div class="card-label">Global Network</div>
+      <h2 class="section-title">EGG Locations Worldwide</h2>
+      <p class="section-subtitle">Each dot represents a hardware random number generator. Color indicates current deviation level.</p>
+      <div class="map-container" id="map-container">
+        <div class="egg-tooltip" id="egg-tooltip"><div class="tt-name"></div><div class="tt-stat"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTAs to other pages -->
+  <div class="cta-row">
+    <a href="what-is-gcp.html" class="card cta-card">
+      <h3>What Is This?</h3>
+      <p>Learn how 65 random number generators became one of the longest-running consciousness experiments in history.</p>
+    </a>
+    <a href="events.html" class="card cta-card">
+      <h3>Famous Events</h3>
+      <p>Explore the most debated anomalies — from 9/11 to the Indian Ocean tsunami to Princess Diana's funeral.</p>
+    </a>
+    <a href="faq.html" class="card cta-card">
+      <h3>Is This Real?</h3>
+      <p>What skeptics say, what the data actually shows, and why nobody has a definitive answer yet.</p>
+    </a>
+    <a href="related.html" class="card cta-card">
+      <h3>Related Phenomena</h3>
+      <p>Schumann resonance, Randonautica, PEAR Lab, the CIA's Stargate Project, and more.</p>
+    </a>
+  </div>
+
+  <footer>
+    <div class="footer-nav">
+      <a href="index.html">Live Data</a>
+      <a href="what-is-gcp.html">What Is GCP?</a>
+      <a href="events.html">Famous Events</a>
+      <a href="faq.html">FAQ</a>
+      <a href="related.html">Related</a>
+    </div>
+    <div class="footer-links">
+      <a href="https://global-mind.org/" target="_blank">Global Consciousness Project</a>
+      <a href="https://noosphere.princeton.edu/" target="_blank">Princeton Noosphere</a>
+      <a href="https://gcp2.net/" target="_blank">GCP 2.0 (HeartMath)</a>
+      <a href="https://gcpdot.com/" target="_blank">GCP Dot</a>
+    </div>
+    <p>Data source: Global Consciousness Project. Not affiliated with Princeton University.</p>
+    <a class="sister-link" href="#" title="Schumann Resonance Live Monitor">⚡ Sister site: Live Schumann Resonance →</a>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const DATA_URL='data/gcp-current.json',REFRESH=600000,CIRC=2*Math.PI*100;
+function getStatus(v){if(v>=1.3)return{label:'Very High Coherence',cls:'status-very-high',color:'#f87171',desc:'The network is showing strong deviation from randomness. This level is rare and often correlates with major world events.'};if(v>=1.15)return{label:'High Coherence',cls:'status-high',color:'#fbbf24',desc:'Network variance is notably elevated — more structure than expected by chance.'};if(v>=1.05)return{label:'Elevated Coherence',cls:'status-elevated',color:'#34d399',desc:'Slight elevation above baseline. The network is showing a mild trend toward non-random behavior.'};return{label:'Normal — Baseline',cls:'status-normal',color:'#60a5fa',desc:'The network is operating within expected random parameters. No significant deviation detected.'};}
+function getEggColor(z){if(z>=2)return'#f87171';if(z>=1.5)return'#fbbf24';if(z>=1)return'#34d399';return'#60a5fa';}
+function updateGauge(d){const n=d.network,s=getStatus(n.network_variance),p=Math.min(n.network_variance/2,1),o=CIRC*(1-p),a=document.getElementById('gauge-arc');a.style.strokeDasharray=CIRC;a.style.strokeDashoffset=o;a.style.stroke=s.color;document.getElementById('gauge-value').textContent=n.network_variance.toFixed(2);document.getElementById('gauge-value').style.color=s.color;const st=document.getElementById('gauge-status');st.textContent=s.label;st.className='gauge-status '+s.cls;document.getElementById('gauge-desc').textContent=s.desc;document.getElementById('gauge-time').textContent='Last updated: '+new Date(d.updated_at).toLocaleString()+' (updates every ~10 min)';}
+function updateStats(d){const n=d.network;document.getElementById('stat-eggs').textContent=n.active_eggs+'/'+n.total_eggs;document.getElementById('stat-z').textContent=n.stouffer_z.toFixed(2);document.getElementById('stat-variance').textContent=n.network_variance.toFixed(3);document.getElementById('stat-countries').textContent=[...new Set(d.eggs.map(e=>e.country))].length;}
+let chart=null;
+function updateTimeline(d){const ctx=document.getElementById('timeline-chart').getContext('2d'),labels=d.timeline_24h.map(p=>new Date(p.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})),values=d.timeline_24h.map(p=>p.variance);if(chart)chart.destroy();chart=new Chart(ctx,{type:'line',data:{labels,datasets:[{data:values,borderColor:'#34d399',backgroundColor:'rgba(52,211,153,0.08)',borderWidth:2,fill:true,tension:0.35,pointRadius:0,pointHoverRadius:5,pointHoverBackgroundColor:'#34d399'}]},options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},plugins:{legend:{display:false},tooltip:{backgroundColor:'#0d1117',borderColor:'#1b2332',borderWidth:1,titleFont:{family:'Space Mono',size:11},bodyFont:{family:'DM Sans',size:12},padding:10,callbacks:{label:c=>'Variance: '+c.parsed.y.toFixed(3)}}},scales:{x:{grid:{color:'rgba(27,35,50,0.5)',drawBorder:false},ticks:{color:'#4a5568',font:{family:'Space Mono',size:10},maxTicksLimit:12}},y:{grid:{color:'rgba(27,35,50,0.5)',drawBorder:false},ticks:{color:'#4a5568',font:{family:'Space Mono',size:10}},suggestedMin:0.8,suggestedMax:1.5}}},plugins:[{beforeDraw(c){const{ctx,chartArea:{left,right},scales:{y}}=c;const y2T=y.getPixelForValue(1.25),y2B=y.getPixelForValue(0.75);ctx.fillStyle='rgba(251,191,36,0.04)';ctx.fillRect(left,y2T,right-left,y2B-y2T);const y3T=y.getPixelForValue(1.4),y3B=y.getPixelForValue(0.6);ctx.fillStyle='rgba(248,113,113,0.03)';ctx.fillRect(left,y3T,right-left,y2T-y3T);ctx.fillRect(left,y2B,right-left,y3B-y2B);const yB=y.getPixelForValue(1.0);ctx.strokeStyle='rgba(96,165,250,0.2)';ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(left,yB);ctx.lineTo(right,yB);ctx.stroke();ctx.setLineDash([]);}}]});}
+function updateMap(d){const c=document.getElementById('map-container'),tt=document.getElementById('egg-tooltip'),w=c.clientWidth,h=c.clientHeight,svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox',`0 0 ${w} ${h}`);svg.style.position='absolute';svg.style.inset='0';const gG=document.createElementNS('http://www.w3.org/2000/svg','g');gG.setAttribute('opacity','0.15');for(let lat=-60;lat<=80;lat+=30){const y=((90-lat)/180)*h,l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('x1',0);l.setAttribute('y1',y);l.setAttribute('x2',w);l.setAttribute('y2',y);l.setAttribute('stroke','#1b2332');l.setAttribute('stroke-width','0.5');gG.appendChild(l);}for(let lng=-180;lng<=180;lng+=30){const x=((lng+180)/360)*w,l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('x1',x);l.setAttribute('y1',0);l.setAttribute('x2',x);l.setAttribute('y2',h);l.setAttribute('stroke','#1b2332');l.setAttribute('stroke-width','0.5');gG.appendChild(l);}svg.appendChild(gG);const cG=document.createElementNS('http://www.w3.org/2000/svg','g');cG.setAttribute('fill','none');cG.setAttribute('stroke','#1b2332');cG.setAttribute('stroke-width','1');[[[- 130,55],[-125,60],[-100,65],[-80,60],[-60,50],[-65,45],[-75,35],[-80,25],[-100,20],[-105,25],[-120,35],[-125,48],[-130,55]],[[-80,10],[-60,5],[-35,-5],[-35,-20],[-40,-23],[-50,-30],[-65,-55],[-75,-45],[-75,-15],[-80,10]],[[-10,35],[0,40],[5,45],[10,55],[20,55],[30,60],[30,70],[40,70],[35,55],[25,40],[10,36],[0,36],[-10,35]],[[-15,15],[-15,10],[5,5],[10,0],[12,-5],[15,-15],[30,-35],[35,-25],[40,-10],[50,10],[40,15],[35,30],[10,35],[0,30],[-15,15]],[[30,35],[40,40],[50,40],[60,45],[70,40],[80,30],[90,25],[100,20],[105,15],[110,25],[120,30],[130,35],[140,40],[145,45],[135,55],[120,55],[100,50],[80,50],[70,55],[60,55],[50,50],[40,45],[30,35]],[[115,-15],[130,-12],[140,-15],[150,-25],[150,-35],[140,-38],[130,-33],[115,-22],[115,-15]]].forEach(coords=>{let dd='';coords.forEach((cc,i)=>{const x=((cc[0]+180)/360)*w,y=((90-cc[1])/180)*h;dd+=(i===0?'M':'L')+x+','+y;});dd+='Z';const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',dd);p.setAttribute('fill','rgba(27,35,50,0.5)');cG.appendChild(p);});svg.appendChild(cG);const eG=document.createElementNS('http://www.w3.org/2000/svg','g');d.eggs.forEach(egg=>{if(egg.status==='offline')return;const x=((egg.lng+180)/360)*w,y=((90-egg.lat)/180)*h,col=getEggColor(egg.z_sq);const gl=document.createElementNS('http://www.w3.org/2000/svg','circle');gl.setAttribute('cx',x);gl.setAttribute('cy',y);gl.setAttribute('r',8);gl.setAttribute('fill',col);gl.setAttribute('opacity','0.15');eG.appendChild(gl);const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');dot.setAttribute('cx',x);dot.setAttribute('cy',y);dot.setAttribute('r',3);dot.setAttribute('fill',col);dot.setAttribute('class','egg-dot');dot.addEventListener('mouseenter',()=>{tt.querySelector('.tt-name').textContent=egg.name+' ('+egg.country+')';tt.querySelector('.tt-stat').textContent='Z² = '+egg.z_sq.toFixed(2);tt.style.left=(x+10)+'px';tt.style.top=(y-40)+'px';tt.classList.add('visible');});dot.addEventListener('mouseleave',()=>tt.classList.remove('visible'));eG.appendChild(dot);});svg.appendChild(eG);const old=c.querySelector('svg');if(old)old.remove();c.appendChild(svg);}
+async function loadData(){try{const r=await fetch(DATA_URL+'?t='+Date.now()),d=await r.json();updateGauge(d);updateStats(d);updateTimeline(d);updateMap(d);}catch(e){console.error('Failed:',e);document.getElementById('gauge-status').textContent='Data unavailable';document.getElementById('gauge-desc').textContent='Could not connect. Will retry automatically.';}}
+loadData();setInterval(loadData,REFRESH);
+let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(async()=>{try{const r=await fetch(DATA_URL+'?t='+Date.now()),d=await r.json();updateMap(d);}catch(e){}},250);});
+</script>
+</body>
+</html>
