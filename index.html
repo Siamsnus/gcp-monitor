@@ -184,6 +184,42 @@ canvas{width:100%!important;height:100%!important}
     </div>
   </section>
 
+  <!-- Embed Widget -->
+  <section class="content-section animate-in delay-4" style="margin-top:40px">
+    <div class="card" style="text-align:center">
+      <div class="card-label">Share</div>
+      <h2 class="section-title" style="margin-bottom:4px">Embed on Your Website</h2>
+      <p class="section-subtitle" style="margin-bottom:20px">Add a live GCP consciousness indicator to your site. Updates automatically.</p>
+      <div style="display:flex;justify-content:center;gap:32px;flex-wrap:wrap;margin-bottom:24px">
+        <div style="text-align:center">
+          <div style="width:48px;height:48px;border-radius:50%;background:#60a5fa;box-shadow:0 0 20px rgba(96,165,250,0.4);margin:0 auto 8px"></div>
+          <div style="font-size:11px;color:var(--text-secondary)">Small (48px)</div>
+        </div>
+        <div style="text-align:center">
+          <div style="width:64px;height:64px;border-radius:50%;background:#34d399;box-shadow:0 0 20px rgba(52,211,153,0.4);margin:0 auto 8px"></div>
+          <div style="font-size:11px;color:var(--text-secondary)">Medium (64px)</div>
+        </div>
+        <div style="text-align:center">
+          <div style="width:80px;height:80px;border-radius:50%;background:#fbbf24;box-shadow:0 0 20px rgba(251,191,36,0.4);margin:0 auto 8px"></div>
+          <div style="font-size:11px;color:var(--text-secondary)">Large (80px)</div>
+        </div>
+      </div>
+      <div style="text-align:left;max-width:700px;margin:0 auto">
+        <label style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;display:block">Select Size & Copy Code</label>
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <button class="embed-btn active" onclick="setEmbed('small')" id="eb-small" style="padding:6px 14px;font-size:11px;font-family:'Space Mono',monospace;background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.3);color:var(--accent-cyan);border-radius:6px;cursor:pointer">Small</button>
+          <button class="embed-btn" onclick="setEmbed('medium')" id="eb-medium" style="padding:6px 14px;font-size:11px;font-family:'Space Mono',monospace;background:transparent;border:1px solid var(--border);color:var(--text-secondary);border-radius:6px;cursor:pointer">Medium</button>
+          <button class="embed-btn" onclick="setEmbed('large')" id="eb-large" style="padding:6px 14px;font-size:11px;font-family:'Space Mono',monospace;background:transparent;border:1px solid var(--border);color:var(--text-secondary);border-radius:6px;cursor:pointer">Large</button>
+          <button class="embed-btn" onclick="setEmbed('minimal')" id="eb-minimal" style="padding:6px 14px;font-size:11px;font-family:'Space Mono',monospace;background:transparent;border:1px solid var(--border);color:var(--text-secondary);border-radius:6px;cursor:pointer">Dot Only</button>
+        </div>
+        <div style="position:relative;background:#0d1320;border:1px solid var(--border);border-radius:8px;padding:14px 16px">
+          <button onclick="copyEmbed()" id="copy-embed-btn" style="position:absolute;top:8px;right:8px;padding:4px 10px;font-size:10px;font-family:'Space Mono',monospace;background:transparent;border:1px solid var(--border);color:var(--text-secondary);border-radius:4px;cursor:pointer">Copy</button>
+          <pre id="embed-code" style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-secondary);white-space:pre-wrap;word-break:break-all">&lt;iframe src="https://siamsnus.github.io/gcp-monitor/embed.html?size=small" width="120" height="90" frameborder="0" scrolling="no" style="border:none"&gt;&lt;/iframe&gt;</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- CTAs to other pages -->
   <div class="cta-row">
     <a href="what-is-gcp.html" class="card cta-card">
@@ -226,6 +262,8 @@ canvas{width:100%!important;height:100%!important}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
 const DATA_URL='data/gcp-current.json',REFRESH=600000,CIRC=2*Math.PI*100;
+const GCPDOT_URL='https://gcpdot.com/gcpindex.php?small=1';
+const REALTIME_REFRESH=60000; // 1 minute for real-time dot data
 function getStatus(v){if(v>=1.3)return{label:'Very High Coherence',cls:'status-very-high',color:'#f87171',desc:'The network is showing strong deviation from randomness. This level is rare and often correlates with major world events.'};if(v>=1.15)return{label:'High Coherence',cls:'status-high',color:'#fbbf24',desc:'Network variance is notably elevated — more structure than expected by chance.'};if(v>=1.05)return{label:'Elevated Coherence',cls:'status-elevated',color:'#34d399',desc:'Slight elevation above baseline. The network is showing a mild trend toward non-random behavior.'};return{label:'Normal — Baseline',cls:'status-normal',color:'#60a5fa',desc:'The network is operating within expected random parameters. No significant deviation detected.'};}
 function getEggColor(z){if(z>=2)return'#f87171';if(z>=1.5)return'#fbbf24';if(z>=1)return'#34d399';return'#60a5fa';}
 function updateGauge(d){const n=d.network,s=getStatus(n.network_variance),p=Math.min(n.network_variance/2,1),o=CIRC*(1-p),a=document.getElementById('gauge-arc');a.style.strokeDasharray=CIRC;a.style.strokeDashoffset=o;a.style.stroke=s.color;document.getElementById('gauge-value').textContent=n.network_variance.toFixed(2);document.getElementById('gauge-value').style.color=s.color;const st=document.getElementById('gauge-status');st.textContent=s.label;st.className='gauge-status '+s.cls;document.getElementById('gauge-desc').textContent=s.desc;document.getElementById('gauge-time').textContent='Last updated: '+new Date(d.updated_at).toLocaleString()+' (updates every ~10 min)';}
@@ -235,6 +273,15 @@ function updateTimeline(d){const ctx=document.getElementById('timeline-chart').g
 function updateMap(d){const c=document.getElementById('map-container'),tt=document.getElementById('egg-tooltip'),w=c.clientWidth,h=c.clientHeight,svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox',`0 0 ${w} ${h}`);svg.style.position='absolute';svg.style.inset='0';const gG=document.createElementNS('http://www.w3.org/2000/svg','g');gG.setAttribute('opacity','0.15');for(let lat=-60;lat<=80;lat+=30){const y=((90-lat)/180)*h,l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('x1',0);l.setAttribute('y1',y);l.setAttribute('x2',w);l.setAttribute('y2',y);l.setAttribute('stroke','#1b2332');l.setAttribute('stroke-width','0.5');gG.appendChild(l);}for(let lng=-180;lng<=180;lng+=30){const x=((lng+180)/360)*w,l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('x1',x);l.setAttribute('y1',0);l.setAttribute('x2',x);l.setAttribute('y2',h);l.setAttribute('stroke','#1b2332');l.setAttribute('stroke-width','0.5');gG.appendChild(l);}svg.appendChild(gG);const cG=document.createElementNS('http://www.w3.org/2000/svg','g');cG.setAttribute('fill','none');cG.setAttribute('stroke','#1b2332');cG.setAttribute('stroke-width','1');[[[- 130,55],[-125,60],[-100,65],[-80,60],[-60,50],[-65,45],[-75,35],[-80,25],[-100,20],[-105,25],[-120,35],[-125,48],[-130,55]],[[-80,10],[-60,5],[-35,-5],[-35,-20],[-40,-23],[-50,-30],[-65,-55],[-75,-45],[-75,-15],[-80,10]],[[-10,35],[0,40],[5,45],[10,55],[20,55],[30,60],[30,70],[40,70],[35,55],[25,40],[10,36],[0,36],[-10,35]],[[-15,15],[-15,10],[5,5],[10,0],[12,-5],[15,-15],[30,-35],[35,-25],[40,-10],[50,10],[40,15],[35,30],[10,35],[0,30],[-15,15]],[[30,35],[40,40],[50,40],[60,45],[70,40],[80,30],[90,25],[100,20],[105,15],[110,25],[120,30],[130,35],[140,40],[145,45],[135,55],[120,55],[100,50],[80,50],[70,55],[60,55],[50,50],[40,45],[30,35]],[[115,-15],[130,-12],[140,-15],[150,-25],[150,-35],[140,-38],[130,-33],[115,-22],[115,-15]]].forEach(coords=>{let dd='';coords.forEach((cc,i)=>{const x=((cc[0]+180)/360)*w,y=((90-cc[1])/180)*h;dd+=(i===0?'M':'L')+x+','+y;});dd+='Z';const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',dd);p.setAttribute('fill','rgba(27,35,50,0.5)');cG.appendChild(p);});svg.appendChild(cG);const eG=document.createElementNS('http://www.w3.org/2000/svg','g');d.eggs.forEach(egg=>{if(egg.status==='offline')return;const x=((egg.lng+180)/360)*w,y=((90-egg.lat)/180)*h,col=getEggColor(egg.z_sq);const gl=document.createElementNS('http://www.w3.org/2000/svg','circle');gl.setAttribute('cx',x);gl.setAttribute('cy',y);gl.setAttribute('r',8);gl.setAttribute('fill',col);gl.setAttribute('opacity','0.15');eG.appendChild(gl);const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');dot.setAttribute('cx',x);dot.setAttribute('cy',y);dot.setAttribute('r',3);dot.setAttribute('fill',col);dot.setAttribute('class','egg-dot');dot.addEventListener('mouseenter',()=>{tt.querySelector('.tt-name').textContent=egg.name+' ('+egg.country+')';tt.querySelector('.tt-stat').textContent='Z² = '+egg.z_sq.toFixed(2);tt.style.left=(x+10)+'px';tt.style.top=(y-40)+'px';tt.classList.add('visible');});dot.addEventListener('mouseleave',()=>tt.classList.remove('visible'));eG.appendChild(dot);});svg.appendChild(eG);const old=c.querySelector('svg');if(old)old.remove();c.appendChild(svg);}
 async function loadData(){try{const r=await fetch(DATA_URL+'?t='+Date.now()),d=await r.json();updateGauge(d);updateStats(d);updateTimeline(d);updateMap(d);}catch(e){console.error('Failed:',e);document.getElementById('gauge-status').textContent='Data unavailable';document.getElementById('gauge-desc').textContent='Could not connect. Will retry automatically.';}}
 loadData();setInterval(loadData,REFRESH);
+// Real-time dot fetch (1-minute) from GCP Dot for quicker gauge updates
+async function fetchRealtimeDot(){try{const r=await fetch(GCPDOT_URL+'&t='+Date.now());const t=await r.text();const m=t.match(/([\d.]+)/);if(m){const prob=parseFloat(m[1]);const variance=1/(prob||1);const s=getStatus(variance);const p=Math.min(variance/2,1),o=CIRC*(1-p),a=document.getElementById('gauge-arc');a.style.strokeDasharray=CIRC;a.style.strokeDashoffset=o;a.style.stroke=s.color;document.getElementById('gauge-value').textContent=variance.toFixed(2);document.getElementById('gauge-value').style.color=s.color;const st=document.getElementById('gauge-status');st.textContent=s.label;st.className='gauge-status '+s.cls;document.getElementById('gauge-desc').textContent=s.desc;document.getElementById('gauge-time').textContent='Live update: '+new Date().toLocaleString()+' (updates every ~1 min)';}}catch(e){/* fallback to 10-min data */}}
+fetchRealtimeDot();setInterval(fetchRealtimeDot,REALTIME_REFRESH);
+
+// Embed widget code generator
+const EMBED_SIZES={small:{w:120,h:90},medium:{w:140,h:110},large:{w:160,h:130},minimal:{w:56,h:56}};
+function setEmbed(size){const s=EMBED_SIZES[size];document.getElementById('embed-code').textContent='<iframe src="https://siamsnus.github.io/gcp-monitor/embed.html?size='+size+'" width="'+s.w+'" height="'+s.h+'" frameborder="0" scrolling="no" style="border:none"></iframe>';document.querySelectorAll('.embed-btn').forEach(b=>{b.style.background='transparent';b.style.borderColor='var(--border)';b.style.color='var(--text-secondary)';});const btn=document.getElementById('eb-'+size);btn.style.background='rgba(34,211,238,0.1)';btn.style.borderColor='rgba(34,211,238,0.3)';btn.style.color='#22d3ee';}
+function copyEmbed(){navigator.clipboard.writeText(document.getElementById('embed-code').textContent.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&quot;/g,'"')).then(()=>{const b=document.getElementById('copy-embed-btn');b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',2000);});}
+
 let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(async()=>{try{const r=await fetch(DATA_URL+'?t='+Date.now()),d=await r.json();updateMap(d);}catch(e){}},250);});
 </script>
 </body>
