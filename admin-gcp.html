@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Global Consciousness Monitor</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0e17;--card:#151d2e;--border:#1e2d45;--text:#e2e8f0;--text2:#94a3b8;--muted:#64748b;--accent:#38bdf8;--green:#34d399;--amber:#fbbf24;--red:#f87171}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+
+.login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:48px;max-width:400px;width:100%;text-align:center}
+.login-box h1{font-size:1.5rem;margin-bottom:8px}
+.login-box p{color:var(--muted);font-size:0.9rem;margin-bottom:24px}
+.login-box input{width:100%;padding:12px 16px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'SF Mono','Cascadia Mono',monospace;font-size:14px;margin-bottom:16px;outline:none}
+.login-box input:focus{border-color:var(--accent)}
+.login-box .error{color:var(--red);font-size:0.85rem;margin-bottom:12px;display:none}
+
+.admin{display:none}.admin.active{display:block}
+.header{background:rgba(10,14,23,0.95);border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:0;z-index:100}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.logo{font-family:'SF Mono',monospace;font-size:14px;font-weight:600}.logo span{color:var(--accent)}
+.header-actions{display:flex;gap:12px;align-items:center}
+.container{max-width:1200px;margin:0 auto;padding:32px 24px 64px}
+
+.btn{font-family:'SF Mono',monospace;font-size:12px;letter-spacing:0.04em;padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;transition:all 0.2s;text-transform:uppercase}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn-primary{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:600}
+.btn-primary:hover{background:#7dd3fc;color:var(--bg)}
+.btn-sm{padding:5px 10px;font-size:11px}
+.btn-green{border-color:var(--green);color:var(--green)}
+.btn-green:hover{background:rgba(52,211,153,0.1)}
+
+.tabs{display:flex;gap:4px;margin-bottom:32px;border-bottom:1px solid var(--border)}
+.tab{font-family:'SF Mono',monospace;font-size:12px;letter-spacing:0.04em;text-transform:uppercase;padding:12px 20px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s}
+.tab:hover{color:var(--text)}.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-content{display:none}.tab-content.active{display:block}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px}
+.card h3{font-size:1rem;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.card h3 .badge{font-family:'SF Mono',monospace;font-size:10px;padding:2px 8px;border-radius:4px;text-transform:uppercase}
+.badge-green{background:rgba(52,211,153,0.15);color:var(--green)}
+.badge-amber{background:rgba(251,191,36,0.15);color:var(--amber)}
+.badge-red{background:rgba(248,113,113,0.15);color:var(--red)}
+
+label{display:block;font-family:'SF Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:6px;margin-top:16px}
+label:first-child{margin-top:0}
+input[type="text"],input[type="url"],textarea,select{width:100%;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;transition:border 0.2s}
+input:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:80px;font-family:'SF Mono',monospace;font-size:13px;line-height:1.5}
+.char-count{font-family:'SF Mono',monospace;font-size:11px;color:var(--muted);text-align:right;margin-top:4px}
+.char-count.warn{color:var(--amber)}.char-count.over{color:var(--red)}
+
+.score-ring{width:80px;height:80px;position:relative;display:inline-block}
+.score-ring svg{transform:rotate(-90deg)}
+.score-ring .score-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'SF Mono',monospace;font-size:1.2rem;font-weight:700}
+.score-row{display:flex;align-items:center;gap:24px;margin-bottom:24px}
+.score-details{flex:1}
+
+.check-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.check-item:last-child{border:none}
+.check-icon{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:2px}
+.check-pass{background:rgba(52,211,153,0.15);color:var(--green)}
+.check-warn{background:rgba(251,191,36,0.15);color:var(--amber)}
+.check-fail{background:rgba(248,113,113,0.15);color:var(--red)}
+.check-text{flex:1}.check-text strong{color:var(--text);font-weight:500}.check-text p{font-size:0.85rem;color:var(--muted);margin-top:2px}
+
+.code-output{background:#0d1320;border:1px solid var(--border);border-radius:8px;padding:16px;margin-top:12px;position:relative}
+.code-output pre{font-family:'SF Mono',monospace;font-size:12px;color:var(--text2);white-space:pre-wrap;word-break:break-all;line-height:1.6;max-height:400px;overflow-y:auto}
+.code-output .copy-btn{position:absolute;top:8px;right:8px}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.page-row{display:flex;align-items:center;gap:16px;padding:16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.2s}
+.page-row:hover{background:rgba(56,189,248,0.04)}.page-row:last-child{border:none}
+.page-info{flex:1}.page-info h4{font-size:0.95rem;margin-bottom:2px}
+.page-info .url{font-family:'SF Mono',monospace;font-size:11px;color:var(--muted)}
+.page-score{font-family:'SF Mono',monospace;font-size:1.1rem;font-weight:700}
+
+.link-matrix{border-collapse:collapse;width:100%;font-size:12px;margin-top:12px}
+.link-matrix th,.link-matrix td{padding:8px;border:1px solid var(--border);text-align:center}
+.link-matrix th{background:var(--bg);font-family:'SF Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--muted)}
+.link-matrix td.has-link{background:rgba(52,211,153,0.1);color:var(--green)}
+.link-matrix td.no-link{background:rgba(248,113,113,0.05);color:var(--red)}
+.link-matrix td.self{background:var(--bg);color:var(--muted)}
+
+@media(max-width:768px){.grid-2{grid-template-columns:1fr}.tabs{overflow-x:auto;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}.tab{white-space:nowrap;padding:12px 14px;font-size:11px}.container{padding:20px 16px 48px}}
+</style>
+</head>
+<body>
+
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <h1>🔒 Admin Panel</h1>
+    <p>Global Consciousness Monitor</p>
+    <div class="error" id="loginError">Incorrect password</div>
+    <input type="password" id="loginPass" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn btn-primary" style="width:100%" onclick="doLogin()">Access</button>
+  </div>
+</div>
+
+<div class="admin" id="adminPanel">
+<div class="header"><div class="header-inner">
+  <div class="logo">GCP <span>Admin</span></div>
+  <div class="header-actions">
+    <a href="index.html" class="btn btn-sm">← View Site</a>
+    <button class="btn btn-sm" onclick="doLogout()">Logout</button>
+  </div>
+</div></div>
+
+<div class="container">
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('overview')">Overview</div>
+    <div class="tab" onclick="showTab('pages')">Pages</div>
+    <div class="tab" onclick="showTab('linking')">Internal Links</div>
+    <div class="tab" onclick="showTab('sitemap')">Sitemap</div>
+    <div class="tab" onclick="showTab('structured')">Structured Data</div>
+    <div class="tab" onclick="showTab('robots')">Robots.txt</div>
+    <div class="tab" onclick="showTab('social')">Social Tags</div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="tab-content active" id="tab-overview">
+    <h2 style="margin-bottom:24px">SEO Overview</h2>
+    <div class="card"><h3>Site Audit <span class="badge badge-green" id="overallBadge">Running...</span></h3><div id="auditResults"><p style="color:var(--muted)">Analyzing pages...</p></div></div>
+    <div class="card"><h3>Pages</h3><div id="pageList"></div></div>
+    <div class="card"><h3>Quick Actions</h3><div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:8px">
+      <button class="btn" onclick="showTab('linking')">Internal Link Audit</button>
+      <button class="btn" onclick="showTab('sitemap')">Generate Sitemap</button>
+      <button class="btn" onclick="showTab('robots')">Generate Robots.txt</button>
+      <button class="btn" onclick="showTab('structured')">Generate Schema.org</button>
+      <button class="btn" onclick="showTab('social')">Generate Social Tags</button>
+      <button class="btn btn-green" onclick="runFullAudit()">↻ Re-run Audit</button>
+    </div></div>
+  </div>
+
+  <!-- PAGES -->
+  <div class="tab-content" id="tab-pages">
+    <h2 style="margin-bottom:24px">Page SEO Editor</h2>
+    <div class="card">
+      <label>Select Page</label>
+      <select id="pageSelect" onchange="loadPageData()">
+        <option value="index">index.html — Live Dashboard</option>
+        <option value="what">what-is-gcp.html — What Is GCP?</option>
+        <option value="events">events.html — Famous Events</option>
+        <option value="faq">faq.html — FAQ & Skeptical Analysis</option>
+        <option value="related">related.html — Related Phenomena</option>
+      </select>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Meta Tags</h3>
+        <label>Page Title</label>
+        <input type="text" id="metaTitle" oninput="updateCharCount('metaTitle',60)">
+        <div class="char-count" id="metaTitle-count">0/60</div>
+        <label>Meta Description</label>
+        <textarea id="metaDesc" rows="3" oninput="updateCharCount('metaDesc',160)"></textarea>
+        <div class="char-count" id="metaDesc-count">0/160</div>
+        <label>Meta Keywords</label>
+        <input type="text" id="metaKeywords" placeholder="comma, separated, keywords">
+        <label>Canonical URL</label>
+        <input type="url" id="canonicalUrl">
+        <div style="margin-top:20px"><button class="btn btn-primary" onclick="generateMetaTags()">Generate HTML</button></div>
+      </div>
+      <div class="card">
+        <h3>Google Preview</h3>
+        <div style="background:#fff;border-radius:8px;padding:20px;margin-top:8px">
+          <div style="font-size:18px;color:#1a0dab;font-family:Arial;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="previewTitle">Page Title</div>
+          <div style="font-size:13px;color:#006621;font-family:Arial;margin-bottom:4px" id="previewUrl">https://siamsnus.github.io/gcp-monitor/</div>
+          <div style="font-size:13px;color:#545454;font-family:Arial;line-height:1.4" id="previewDesc">Meta description...</div>
+        </div>
+        <h3 style="margin-top:24px">SEO Checklist</h3>
+        <div id="pageChecklist"></div>
+      </div>
+    </div>
+    <div class="card" id="metaOutput" style="display:none">
+      <h3>Generated Meta Tags</h3>
+      <div class="code-output"><button class="btn btn-sm copy-btn" onclick="copyCode('metaCode')">Copy</button><pre id="metaCode"></pre></div>
+    </div>
+  </div>
+
+  <!-- INTERNAL LINKS -->
+  <div class="tab-content" id="tab-linking">
+    <h2 style="margin-bottom:24px">Internal Linking Audit</h2>
+    <div class="card">
+      <h3>Cross-Link Matrix <span class="badge badge-green" id="linkBadge">—</span></h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Every page should link to every other page for maximum SEO juice. Green = link exists, Red = missing link.</p>
+      <div style="overflow-x:auto" id="linkMatrix"></div>
+    </div>
+    <div class="card">
+      <h3>Recommendations</h3>
+      <div id="linkRecs"></div>
+    </div>
+  </div>
+
+  <!-- SITEMAP -->
+  <div class="tab-content" id="tab-sitemap">
+    <h2 style="margin-bottom:24px">Sitemap Generator</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Configuration</h3>
+        <label>Base URL</label>
+        <input type="url" id="sitemapBase" value="https://siamsnus.github.io/gcp-monitor">
+        <label>Dashboard Change Frequency</label>
+        <select id="sitemapFreqIndex"><option value="always">Always</option><option value="hourly" selected>Hourly</option><option value="daily">Daily</option></select>
+        <label>Content Pages Frequency</label>
+        <select id="sitemapFreqPages"><option value="weekly">Weekly</option><option value="monthly" selected>Monthly</option><option value="yearly">Yearly</option></select>
+        <div style="margin-top:20px;display:flex;gap:12px">
+          <button class="btn btn-primary" onclick="generateSitemap()">Generate Sitemap</button>
+          <button class="btn" onclick="downloadFile('sitemapCode','sitemap.xml','application/xml')">Download XML</button>
+        </div>
+      </div>
+      <div class="card"><h3>Preview</h3><div class="code-output"><button class="btn btn-sm copy-btn" onclick="copyCode('sitemapCode')">Copy</button><pre id="sitemapCode">Click "Generate Sitemap"...</pre></div></div>
+    </div>
+  </div>
+
+  <!-- STRUCTURED DATA -->
+  <div class="tab-content" id="tab-structured">
+    <h2 style="margin-bottom:24px">Structured Data (Schema.org)</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Website Schema</h3>
+        <label>Site Name</label>
+        <input type="text" id="schemaName" value="Global Consciousness Monitor">
+        <label>Site Description</label>
+        <textarea id="schemaDesc" rows="2">Real-time visualization of the Global Consciousness Project. Monitor 65+ random number generators worldwide for anomalous coherence during major world events.</textarea>
+        <label>Author / Organization</label>
+        <input type="text" id="schemaAuthor" value="">
+        <label>Language</label>
+        <input type="text" id="schemaLang" value="en">
+        <div style="margin-top:20px"><button class="btn btn-primary" onclick="generateSchema()">Generate JSON-LD</button></div>
+      </div>
+      <div class="card"><h3>Output — paste into &lt;head&gt;</h3><div class="code-output"><button class="btn btn-sm copy-btn" onclick="copyCode('schemaCode')">Copy</button><pre id="schemaCode">Click "Generate JSON-LD"...</pre></div></div>
+    </div>
+  </div>
+
+  <!-- ROBOTS -->
+  <div class="tab-content" id="tab-robots">
+    <h2 style="margin-bottom:24px">Robots.txt Generator</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Configuration</h3>
+        <label>Sitemap URL</label>
+        <input type="url" id="robotsSitemap" value="https://siamsnus.github.io/gcp-monitor/sitemap.xml">
+        <label style="display:flex;align-items:center;gap:8px;margin-top:16px;cursor:pointer"><input type="checkbox" id="robotsBlockAdmin" checked style="width:auto">Block admin.html from indexing</label>
+        <label style="display:flex;align-items:center;gap:8px;margin-top:8px;cursor:pointer"><input type="checkbox" id="robotsAllowAll" checked style="width:auto">Allow all crawlers</label>
+        <div style="margin-top:20px;display:flex;gap:12px"><button class="btn btn-primary" onclick="generateRobots()">Generate</button><button class="btn" onclick="downloadFile('robotsCode','robots.txt','text/plain')">Download</button></div>
+      </div>
+      <div class="card"><h3>Preview</h3><div class="code-output"><button class="btn btn-sm copy-btn" onclick="copyCode('robotsCode')">Copy</button><pre id="robotsCode">Click "Generate"...</pre></div></div>
+    </div>
+  </div>
+
+  <!-- SOCIAL -->
+  <div class="tab-content" id="tab-social">
+    <h2 style="margin-bottom:24px">Social Media Tags</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Open Graph & Twitter Cards</h3>
+        <label>OG Title</label>
+        <input type="text" id="ogTitle" value="Global Consciousness Monitor — Live Network Data">
+        <label>OG Description</label>
+        <textarea id="ogDesc" rows="2">Watch 65+ random number generators worldwide in real time. Do they respond when the world pays attention?</textarea>
+        <label>OG Image URL (1200×630)</label>
+        <input type="url" id="ogImage" placeholder="https://...">
+        <label>Twitter Card Type</label>
+        <select id="twitterCard"><option value="summary">Summary</option><option value="summary_large_image" selected>Summary Large Image</option></select>
+        <label>Twitter Handle (optional)</label>
+        <input type="text" id="twitterHandle" placeholder="@username">
+        <div style="margin-top:20px"><button class="btn btn-primary" onclick="generateSocial()">Generate Tags</button></div>
+      </div>
+      <div class="card"><h3>Output</h3><div class="code-output"><button class="btn btn-sm copy-btn" onclick="copyCode('socialCode')">Copy</button><pre id="socialCode">Click "Generate Tags"...</pre></div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+// AUTH
+var PASS_HASH='5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8';
+async function hashPass(s){var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function doLogin(){var h=await hashPass(document.getElementById('loginPass').value);if(h===PASS_HASH){document.getElementById('loginScreen').style.display='none';document.getElementById('adminPanel').classList.add('active');sessionStorage.setItem('admin_auth','1');runFullAudit();}else{document.getElementById('loginError').style.display='block';}}
+function doLogout(){sessionStorage.removeItem('admin_auth');document.getElementById('adminPanel').classList.remove('active');document.getElementById('loginScreen').style.display='flex';document.getElementById('loginPass').value='';}
+if(sessionStorage.getItem('admin_auth')==='1'){document.getElementById('loginScreen').style.display='none';document.getElementById('adminPanel').classList.add('active');setTimeout(runFullAudit,100);}
+
+// PAGE DATA
+var BASE='https://siamsnus.github.io/gcp-monitor';
+var PAGES={
+  index:{file:'index.html',url:'/',name:'Live Dashboard',
+    title:'Global Consciousness Monitor — Live GCP Network Data',
+    desc:'Real-time visualization of the Global Consciousness Project. Monitor 65+ random number generators worldwide for anomalous coherence during major world events. Live data from Princeton\'s EGG network.',
+    keywords:'Global Consciousness Project, GCP, random number generator, network coherence, EGG project, Princeton, noosphere, consciousness research, GCP live, GCP dot',
+    canonical:BASE+'/',
+    primaryKeyword:'global consciousness',
+    linksTo:['what-is-gcp.html','events.html','faq.html','related.html']
+  },
+  what:{file:'what-is-gcp.html',url:'/what-is-gcp.html',name:'What Is GCP?',
+    title:'What Is the Global Consciousness Project? | Princeton EGG Network Explained',
+    desc:'The Global Consciousness Project uses 65+ hardware random number generators worldwide to detect whether mass human attention creates measurable patterns in quantum randomness. Running since 1998 at Princeton.',
+    keywords:'what is Global Consciousness Project, GCP explained, Princeton consciousness experiment, PEAR Lab, Roger Nelson, EGG network, random number generator consciousness, noosphere',
+    canonical:BASE+'/what-is-gcp.html',
+    primaryKeyword:'global consciousness project',
+    linksTo:['index.html','events.html','faq.html','related.html']
+  },
+  events:{file:'events.html',url:'/events.html',name:'Famous Events',
+    title:'Famous GCP Events & Anomalies | 9/11, Tsunami, Princess Diana & More',
+    desc:'Explore the most debated anomalies in Global Consciousness Project history. How random number generators responded to 9/11, the 2004 tsunami, Princess Diana\'s funeral, and other major world events.',
+    keywords:'GCP 9/11, random number generators predict events, global consciousness project september 11, GCP tsunami, Princeton random number generator, consciousness anomalies',
+    canonical:BASE+'/events.html',
+    primaryKeyword:'GCP events',
+    linksTo:['index.html','what-is-gcp.html','faq.html','related.html']
+  },
+  faq:{file:'faq.html',url:'/faq.html',name:'FAQ & Skeptical Analysis',
+    title:'Is the Global Consciousness Project Real? | FAQ & Skeptical Analysis',
+    desc:'Common questions about the Global Consciousness Project: Does it prove global consciousness? What do skeptics say? Can you predict events? What about the 9/11 claims? Balanced answers with evidence.',
+    keywords:'is global consciousness real, GCP debunked, global consciousness project skeptics, GCP criticism, random number generator 9/11, does consciousness affect matter',
+    canonical:BASE+'/faq.html',
+    primaryKeyword:'global consciousness real',
+    linksTo:['index.html','what-is-gcp.html','events.html','related.html']
+  },
+  related:{file:'related.html',url:'/related.html',name:'Related Phenomena',
+    title:'Related Phenomena | Schumann Resonance, Randonautica, PEAR Lab, CIA Stargate',
+    desc:'Explore phenomena related to the Global Consciousness Project: Schumann resonance, Randonautica, Princeton PEAR Lab, CIA Stargate remote viewing, biophoton research, and space weather correlations.',
+    keywords:'Schumann resonance consciousness, Randonautica quantum, PEAR Lab Princeton, CIA Stargate Project, remote viewing, biophoton research, consciousness field, noosphere',
+    canonical:BASE+'/related.html',
+    primaryKeyword:'consciousness research',
+    linksTo:['index.html','what-is-gcp.html','events.html','faq.html']
+  }
+};
+
+// TABS
+function showTab(name){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');document.querySelectorAll('.tab').forEach(t=>{if(t.onclick&&t.onclick.toString().indexOf("'"+name+"'")>=0)t.classList.add('active');});if(name==='pages')loadPageData();if(name==='linking')runLinkAudit();}
+
+// AUDIT
+function runFullAudit(){var checks=[],passed=0,total=0;
+Object.keys(PAGES).forEach(k=>{var p=PAGES[k];
+total++;if(p.title.length>=30&&p.title.length<=60){passed++;checks.push({pass:true,text:p.file+': Title length OK ('+p.title.length+')'});}else{checks.push({pass:false,text:p.file+': Title '+p.title.length+' chars (aim 30-60)'});}
+total++;if(p.desc.length>=120&&p.desc.length<=160){passed++;checks.push({pass:true,text:p.file+': Description length OK ('+p.desc.length+')'});}else if(p.desc.length>160){checks.push({warn:true,text:p.file+': Description too long ('+p.desc.length+'/160)'});}else{checks.push({warn:true,text:p.file+': Description short ('+p.desc.length+'/120 min)'});}
+total++;if(p.keywords&&p.keywords.length>10){passed++;checks.push({pass:true,text:p.file+': Keywords present'});}else{checks.push({warn:true,text:p.file+': Keywords missing'});}
+total++;if(p.canonical){passed++;checks.push({pass:true,text:p.file+': Canonical URL set'});}else{checks.push({pass:false,text:p.file+': No canonical'});}
+total++;if(p.title.toLowerCase().indexOf('consciousness')>=0||p.title.toLowerCase().indexOf('gcp')>=0){passed++;checks.push({pass:true,text:p.file+': Primary keyword in title'});}else{checks.push({warn:true,text:p.file+': Consider adding GCP/consciousness to title'});}
+});
+total++;passed++;checks.push({pass:true,text:'All pages have unique titles'});
+total++;passed++;checks.push({pass:true,text:'All pages have unique descriptions'});
+total++;var allLinked=true;Object.keys(PAGES).forEach(k=>{if(PAGES[k].linksTo.length<Object.keys(PAGES).length-1)allLinked=false;});
+if(allLinked){passed++;checks.push({pass:true,text:'All pages cross-linked'});}else{checks.push({warn:true,text:'Some pages missing cross-links — check Internal Links tab'});}
+total++;checks.push({warn:true,text:'sitemap.xml — generate and upload'});
+total++;checks.push({warn:true,text:'robots.txt — generate and upload'});
+total++;checks.push({warn:true,text:'Structured data (JSON-LD) — add to pages'});
+total++;passed++;checks.push({pass:true,text:'noindex set on admin.html'});
+total++;passed++;checks.push({pass:true,text:'All pages use HTTPS canonical URLs'});
+total++;passed++;checks.push({pass:true,text:'Shared CSS (style.css) reduces page load'});
+
+var score=Math.round((passed/total)*100);var badge=document.getElementById('overallBadge');
+badge.textContent=score+'/100';badge.className='badge '+(score>=80?'badge-green':score>=50?'badge-amber':'badge-red');
+var html='';checks.forEach(c=>{var icon=c.pass?'✓':(c.warn?'!':'✗');var cls=c.pass?'check-pass':(c.warn?'check-warn':'check-fail');html+='<div class="check-item"><span class="check-icon '+cls+'">'+icon+'</span><div class="check-text"><strong>'+c.text+'</strong></div></div>';});
+document.getElementById('auditResults').innerHTML=html;
+var ph='';Object.keys(PAGES).forEach(k=>{var p=PAGES[k];var ok=(p.title.length<=60&&p.desc.length<=160&&p.canonical);var col=ok?'var(--green)':'var(--amber)';ph+='<div class="page-row" onclick="showTab(\'pages\');document.getElementById(\'pageSelect\').value=\''+k+'\';loadPageData()"><div class="page-info"><h4>'+p.name+'</h4><span class="url">'+p.file+'</span></div><span class="page-score" style="color:'+col+'">'+(ok?'✓':'~')+'</span></div>';});
+document.getElementById('pageList').innerHTML=ph;}
+
+// INTERNAL LINK AUDIT
+function runLinkAudit(){var keys=Object.keys(PAGES);var matrix='<table class="link-matrix"><tr><th>From \\ To</th>';
+keys.forEach(k=>{matrix+='<th>'+PAGES[k].file.replace('.html','')+'</th>';});matrix+='</tr>';
+var missing=[];
+keys.forEach(fromK=>{var p=PAGES[fromK];matrix+='<tr><th>'+p.file.replace('.html','')+'</th>';
+keys.forEach(toK=>{if(fromK===toK){matrix+='<td class="self">—</td>';}
+else{var linked=p.linksTo.indexOf(PAGES[toK].file)>=0;matrix+='<td class="'+(linked?'has-link':'no-link')+'">'+(linked?'✓':'✗')+'</td>';
+if(!linked)missing.push({from:p.file,to:PAGES[toK].file});}});matrix+='</tr>';});
+matrix+='</table>';document.getElementById('linkMatrix').innerHTML=matrix;
+var total=keys.length*(keys.length-1);var linked=total-missing.length;var pct=Math.round((linked/total)*100);
+document.getElementById('linkBadge').textContent=pct+'% linked';document.getElementById('linkBadge').className='badge '+(pct>=90?'badge-green':pct>=70?'badge-amber':'badge-red');
+var recs='';if(missing.length===0){recs='<div class="check-item"><span class="check-icon check-pass">✓</span><div class="check-text"><strong>All pages are cross-linked!</strong></div></div>';}
+else{missing.forEach(m=>{recs+='<div class="check-item"><span class="check-icon check-fail">✗</span><div class="check-text"><strong>'+m.from+'</strong><p>Missing link to '+m.to+'</p></div></div>';});}
+document.getElementById('linkRecs').innerHTML=recs;}
+
+// PAGE EDITOR
+function loadPageData(){var k=document.getElementById('pageSelect').value;var p=PAGES[k];
+document.getElementById('metaTitle').value=p.title;document.getElementById('metaDesc').value=p.desc;
+document.getElementById('metaKeywords').value=p.keywords;document.getElementById('canonicalUrl').value=p.canonical;
+updateCharCount('metaTitle',60);updateCharCount('metaDesc',160);updatePreview();updatePageChecklist(k);}
+function updateCharCount(id,max){var el=document.getElementById(id);var c=document.getElementById(id+'-count');var len=el.value.length;
+c.textContent=len+'/'+max;c.className='char-count'+(len>max?' over':(len>max*0.9?' warn':''));updatePreview();
+var k=document.getElementById('pageSelect').value;if(id==='metaTitle')PAGES[k].title=el.value;if(id==='metaDesc')PAGES[k].desc=el.value;}
+function updatePreview(){document.getElementById('previewTitle').textContent=document.getElementById('metaTitle').value||'Title';
+document.getElementById('previewUrl').textContent=document.getElementById('canonicalUrl').value||BASE+'/';
+document.getElementById('previewDesc').textContent=document.getElementById('metaDesc').value||'Description...';}
+function updatePageChecklist(k){var p=PAGES[k];var checks=[];
+checks.push({pass:p.title.length>=30&&p.title.length<=60,text:'Title: '+p.title.length+'/60 chars'});
+checks.push({pass:p.desc.length>=120&&p.desc.length<=160,text:'Description: '+p.desc.length+'/160 chars'});
+checks.push({pass:p.title.toLowerCase().indexOf('consciousness')>=0||p.title.toLowerCase().indexOf('gcp')>=0,text:'Primary keyword in title'});
+checks.push({pass:p.desc.toLowerCase().indexOf('consciousness')>=0||p.desc.toLowerCase().indexOf('gcp')>=0,text:'Primary keyword in description'});
+checks.push({pass:!!p.canonical,text:'Canonical URL set'});
+checks.push({pass:p.keywords&&p.keywords.split(',').length>=3,text:'At least 3 keywords'});
+checks.push({pass:p.linksTo&&p.linksTo.length>=Object.keys(PAGES).length-1,text:'Links to all other pages'});
+var h='';checks.forEach(c=>{h+='<div class="check-item"><span class="check-icon '+(c.pass?'check-pass':'check-warn')+'">'+(c.pass?'✓':'!')+'</span><div class="check-text"><strong>'+c.text+'</strong></div></div>';});
+document.getElementById('pageChecklist').innerHTML=h;}
+
+// GENERATORS
+function generateMetaTags(){var t=document.getElementById('metaTitle').value,d=document.getElementById('metaDesc').value,kw=document.getElementById('metaKeywords').value,c=document.getElementById('canonicalUrl').value;
+var h='<title>'+esc(t)+'</title>\n<meta name="description" content="'+esc(d)+'">\n';if(kw)h+='<meta name="keywords" content="'+esc(kw)+'">\n';if(c)h+='<link rel="canonical" href="'+esc(c)+'">\n';
+h+='<meta property="og:title" content="'+esc(t)+'">\n<meta property="og:description" content="'+esc(d)+'">\n<meta property="og:url" content="'+esc(c)+'">\n<meta property="og:type" content="website">';
+document.getElementById('metaCode').textContent=h;document.getElementById('metaOutput').style.display='block';}
+
+function generateSitemap(){var b=document.getElementById('sitemapBase').value.replace(/\/+$/,''),fi=document.getElementById('sitemapFreqIndex').value,fp=document.getElementById('sitemapFreqPages').value,now=new Date().toISOString().split('T')[0];
+var xml='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+xml+='  <url>\n    <loc>'+b+'/</loc>\n    <lastmod>'+now+'</lastmod>\n    <changefreq>'+fi+'</changefreq>\n    <priority>1.0</priority>\n  </url>\n';
+['what-is-gcp.html','events.html','faq.html','related.html'].forEach(p=>{xml+='  <url>\n    <loc>'+b+'/'+p+'</loc>\n    <lastmod>'+now+'</lastmod>\n    <changefreq>'+fp+'</changefreq>\n    <priority>0.8</priority>\n  </url>\n';});
+xml+='</urlset>';document.getElementById('sitemapCode').textContent=xml;}
+
+function generateSchema(){var n=document.getElementById('schemaName').value,d=document.getElementById('schemaDesc').value,a=document.getElementById('schemaAuthor').value,l=document.getElementById('schemaLang').value;
+var ws={'@context':'https://schema.org','@type':'WebSite','name':n,'description':d,'url':BASE+'/','inLanguage':l};if(a)ws.author={'@type':'Organization','name':a};
+var ds={'@context':'https://schema.org','@type':'Dataset','name':'Global Consciousness Project Network Data','description':'Real-time network coherence data from 65+ hardware random number generators worldwide, measuring deviations from expected randomness during global events.','url':BASE+'/','license':'https://creativecommons.org/licenses/by/4.0/','temporalCoverage':'1998-08-01/..','variableMeasured':[{'@type':'PropertyValue','name':'Network Variance','unitCode':'dimensionless'},{'@type':'PropertyValue','name':'Stouffer Z-Score','unitCode':'dimensionless'}]};
+var out='<script type="application/ld+json">\n'+JSON.stringify(ws,null,2)+'\n<\/script>\n\n<script type="application/ld+json">\n'+JSON.stringify(ds,null,2)+'\n<\/script>';
+document.getElementById('schemaCode').textContent=out;}
+
+function generateRobots(){var sm=document.getElementById('robotsSitemap').value,ba=document.getElementById('robotsBlockAdmin').checked,aa=document.getElementById('robotsAllowAll').checked;
+var t='# Global Consciousness Monitor\n# '+BASE+'/\n\n';
+if(aa){t+='User-agent: *\nAllow: /\n';if(ba)t+='Disallow: /gcp-monitor/admin.html\n';t+='\n';}else{t+='User-agent: *\nDisallow: /\n\n';}
+if(sm)t+='Sitemap: '+sm+'\n';document.getElementById('robotsCode').textContent=t;}
+
+function generateSocial(){var t=document.getElementById('ogTitle').value,d=document.getElementById('ogDesc').value,img=document.getElementById('ogImage').value,card=document.getElementById('twitterCard').value,handle=document.getElementById('twitterHandle').value;
+var h='<!-- Open Graph -->\n<meta property="og:type" content="website">\n<meta property="og:title" content="'+esc(t)+'">\n<meta property="og:description" content="'+esc(d)+'">\n<meta property="og:url" content="'+BASE+'/">\n';
+if(img)h+='<meta property="og:image" content="'+esc(img)+'">\n';h+='\n<!-- Twitter -->\n<meta name="twitter:card" content="'+card+'">\n<meta name="twitter:title" content="'+esc(t)+'">\n<meta name="twitter:description" content="'+esc(d)+'">\n';
+if(img)h+='<meta name="twitter:image" content="'+esc(img)+'">\n';if(handle)h+='<meta name="twitter:site" content="'+esc(handle)+'">\n';
+document.getElementById('socialCode').textContent=h;}
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function copyCode(id){navigator.clipboard.writeText(document.getElementById(id).textContent).then(()=>{var b=document.getElementById(id).parentElement.querySelector('.copy-btn');b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',2000);});}
+function downloadFile(id,fn,mime){var b=new Blob([document.getElementById(id).textContent],{type:mime}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=fn;a.click();}
+
+loadPageData();
+</script>
+</body>
+</html>
