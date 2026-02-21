@@ -1,0 +1,6 @@
+# Global Consciousness Monitor
+# TEMPORARY: Block all crawling until real domain is configured
+# Delete this file or replace with proper robots.txt when going live
+
+User-agent: *
+Disallow: /
