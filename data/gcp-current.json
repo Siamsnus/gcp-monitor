@@ -1,19 +1,14 @@
 {
-  "updated_at": "2026-02-26T09:26:46.294579+00:00",
+  "updated_at": "2026-02-26T10:11:37.181454+00:00",
   "network": {
-    "coherence_level": 0.4551,
-    "status": "normal",
-    "active_eggs": 44,
+    "coherence_level": 0.3244,
+    "status": "high",
+    "active_eggs": 42,
     "total_eggs": 49,
-    "stouffer_z": 0.31,
-    "network_variance": 1.0449
+    "stouffer_z": 1.23,
+    "network_variance": 1.1756
   },
   "timeline_24h": [
-    {
-      "time": "2026-02-21T14:30:33.749069+00:00",
-      "variance": 1.2325,
-      "z_score": 1.63
-    },
     {
       "time": "2026-02-21T14:56:04.222120+00:00",
       "variance": 1.4203,
@@ -728,6 +723,11 @@
       "time": "2026-02-26T09:26:46.294579+00:00",
       "variance": 1.0449,
       "z_score": 0.31
+    },
+    {
+      "time": "2026-02-26T10:11:37.181454+00:00",
+      "variance": 1.1756,
+      "z_score": 1.23
     }
   ],
   "eggs": [
@@ -738,7 +738,7 @@
       "lng": -74.66,
       "country": "US",
       "status": "active",
-      "z_sq": 1.17
+      "z_sq": 1.35
     },
     {
       "id": 37,
@@ -746,8 +746,8 @@
       "lat": 46.95,
       "lng": 7.45,
       "country": "CH",
-      "status": "offline",
-      "z_sq": 0
+      "status": "active",
+      "z_sq": 1.59
     },
     {
       "id": 100,
@@ -755,8 +755,8 @@
       "lat": -33.87,
       "lng": 151.21,
       "country": "AU",
-      "status": "active",
-      "z_sq": 1.68
+      "status": "offline",
+      "z_sq": 0
     },
     {
       "id": 101,
@@ -765,7 +765,7 @@
       "lng": 139.69,
       "country": "JP",
       "status": "active",
-      "z_sq": 1.68
+      "z_sq": 0.75
     },
     {
       "id": 102,
@@ -774,7 +774,7 @@
       "lng": 13.41,
       "country": "DE",
       "status": "active",
-      "z_sq": 2.07
+      "z_sq": 1.67
     },
     {
       "id": 103,
@@ -783,7 +783,7 @@
       "lng": -0.13,
       "country": "GB",
       "status": "active",
-      "z_sq": 1.93
+      "z_sq": 1.49
     },
     {
       "id": 104,
@@ -792,7 +792,7 @@
       "lng": 37.62,
       "country": "RU",
       "status": "active",
-      "z_sq": 2.1
+      "z_sq": 1.07
     },
     {
       "id": 105,
@@ -800,8 +800,8 @@
       "lat": 28.61,
       "lng": 77.21,
       "country": "IN",
-      "status": "active",
-      "z_sq": 1.76
+      "status": "offline",
+      "z_sq": 0
     },
     {
       "id": 106,
@@ -810,7 +810,7 @@
       "lng": -46.63,
       "country": "BR",
       "status": "active",
-      "z_sq": 1.39
+      "z_sq": 2.01
     },
     {
       "id": 107,
@@ -819,7 +819,7 @@
       "lng": 31.24,
       "country": "EG",
       "status": "active",
-      "z_sq": 1.26
+      "z_sq": 1.28
     },
     {
       "id": 108,
@@ -828,7 +828,7 @@
       "lng": 100.5,
       "country": "TH",
       "status": "active",
-      "z_sq": 0.32
+      "z_sq": 1.22
     },
     {
       "id": 109,
@@ -837,7 +837,7 @@
       "lng": 174.76,
       "country": "NZ",
       "status": "active",
-      "z_sq": 1.16
+      "z_sq": 2.17
     },
     {
       "id": 110,
@@ -845,8 +845,8 @@
       "lat": 49.28,
       "lng": -123.12,
       "country": "CA",
-      "status": "active",
-      "z_sq": 0.69
+      "status": "offline",
+      "z_sq": 0
     },
     {
       "id": 111,
@@ -855,7 +855,7 @@
       "lng": 18.07,
       "country": "SE",
       "status": "active",
-      "z_sq": 1.06
+      "z_sq": 1.16
     },
     {
       "id": 112,
@@ -864,7 +864,7 @@
       "lng": 4.9,
       "country": "NL",
       "status": "active",
-      "z_sq": 1.7
+      "z_sq": 1.77
     },
     {
       "id": 113,
@@ -873,7 +873,7 @@
       "lng": 115.86,
       "country": "AU",
       "status": "active",
-      "z_sq": 1.59
+      "z_sq": 1.28
     },
     {
       "id": 114,
@@ -891,7 +891,7 @@
       "lng": -87.63,
       "country": "US",
       "status": "active",
-      "z_sq": 0.47
+      "z_sq": 0.88
     },
     {
       "id": 116,
@@ -900,7 +900,7 @@
       "lng": -118.24,
       "country": "US",
       "status": "active",
-      "z_sq": 0.37
+      "z_sq": 1.43
     },
     {
       "id": 117,
@@ -909,7 +909,7 @@
       "lng": 2.35,
       "country": "FR",
       "status": "active",
-      "z_sq": 0.92
+      "z_sq": 1.73
     },
     {
       "id": 118,
@@ -918,7 +918,7 @@
       "lng": 12.5,
       "country": "IT",
       "status": "active",
-      "z_sq": 0.65
+      "z_sq": 0.67
     },
     {
       "id": 119,
@@ -926,8 +926,8 @@
       "lat": 48.21,
       "lng": 16.37,
       "country": "AT",
-      "status": "active",
-      "z_sq": 0.63
+      "status": "offline",
+      "z_sq": 0
     },
     {
       "id": 120,
@@ -936,7 +936,7 @@
       "lng": 12.57,
       "country": "DK",
       "status": "active",
-      "z_sq": 0.93
+      "z_sq": 1.48
     },
     {
       "id": 121,
@@ -945,7 +945,7 @@
       "lng": 174.78,
       "country": "NZ",
       "status": "active",
-      "z_sq": 1.22
+      "z_sq": 0.96
     },
     {
       "id": 122,
@@ -953,8 +953,8 @@
       "lat": 37.57,
       "lng": 126.98,
       "country": "KR",
-      "status": "active",
-      "z_sq": 0.23
+      "status": "offline",
+      "z_sq": 0
     },
     {
       "id": 123,
@@ -962,8 +962,8 @@
       "lat": 39.9,
       "lng": 116.4,
       "country": "CN",
-      "status": "offline",
-      "z_sq": 0
+      "status": "active",
+      "z_sq": 1.17
     },
     {
       "id": 124,
@@ -972,7 +972,7 @@
       "lng": 114.17,
       "country": "HK",
       "status": "active",
-      "z_sq": 1.35
+      "z_sq": 0.68
     },
     {
       "id": 125,
@@ -981,7 +981,7 @@
       "lng": 106.85,
       "country": "ID",
       "status": "active",
-      "z_sq": 1.47
+      "z_sq": 0.94
     },
     {
       "id": 126,
@@ -990,7 +990,7 @@
       "lng": -99.13,
       "country": "MX",
       "status": "active",
-      "z_sq": 1.04
+      "z_sq": 0.74
     },
     {
       "id": 127,
@@ -999,7 +999,7 @@
       "lng": -58.38,
       "country": "AR",
       "status": "active",
-      "z_sq": 0.37
+      "z_sq": 0.63
     },
     {
       "id": 128,
@@ -1008,7 +1008,7 @@
       "lng": 18.42,
       "country": "ZA",
       "status": "active",
-      "z_sq": 1.51
+      "z_sq": 0.98
     },
     {
       "id": 129,
@@ -1017,7 +1017,7 @@
       "lng": 55.27,
       "country": "AE",
       "status": "active",
-      "z_sq": 0.71
+      "z_sq": 1.6
     },
     {
       "id": 130,
@@ -1026,7 +1026,7 @@
       "lng": 24.94,
       "country": "FI",
       "status": "active",
-      "z_sq": 1.35
+      "z_sq": 1.44
     },
     {
       "id": 131,
@@ -1035,7 +1035,7 @@
       "lng": -3.19,
       "country": "GB",
       "status": "active",
-      "z_sq": 0.66
+      "z_sq": 1.29
     },
     {
       "id": 132,
@@ -1044,7 +1044,7 @@
       "lng": 21.01,
       "country": "PL",
       "status": "active",
-      "z_sq": 1.13
+      "z_sq": 0.84
     },
     {
       "id": 133,
@@ -1053,7 +1053,7 @@
       "lng": 14.44,
       "country": "CZ",
       "status": "active",
-      "z_sq": 0.61
+      "z_sq": 0.67
     },
     {
       "id": 134,
@@ -1062,7 +1062,7 @@
       "lng": 8.54,
       "country": "CH",
       "status": "active",
-      "z_sq": 0.91
+      "z_sq": 0.79
     },
     {
       "id": 135,
@@ -1071,7 +1071,7 @@
       "lng": 2.17,
       "country": "ES",
       "status": "active",
-      "z_sq": 0.06
+      "z_sq": 1.69
     },
     {
       "id": 136,
@@ -1079,8 +1079,8 @@
       "lat": 38.72,
       "lng": -9.14,
       "country": "PT",
-      "status": "active",
-      "z_sq": 1.68
+      "status": "offline",
+      "z_sq": 0
     },
     {
       "id": 137,
@@ -1089,7 +1089,7 @@
       "lng": 23.73,
       "country": "GR",
       "status": "active",
-      "z_sq": 0.14
+      "z_sq": 1.12
     },
     {
       "id": 138,
@@ -1098,7 +1098,7 @@
       "lng": 34.78,
       "country": "IL",
       "status": "active",
-      "z_sq": 0.8
+      "z_sq": 1.17
     },
     {
       "id": 139,
@@ -1107,7 +1107,7 @@
       "lng": 72.88,
       "country": "IN",
       "status": "active",
-      "z_sq": 0.85
+      "z_sq": 2.05
     },
     {
       "id": 140,
@@ -1115,8 +1115,8 @@
       "lat": 25.03,
       "lng": 121.57,
       "country": "TW",
-      "status": "offline",
-      "z_sq": 0
+      "status": "active",
+      "z_sq": 0.77
     },
     {
       "id": 141,
@@ -1125,7 +1125,7 @@
       "lng": 135.5,
       "country": "JP",
       "status": "active",
-      "z_sq": 2.0
+      "z_sq": 1.12
     },
     {
       "id": 142,
@@ -1134,7 +1134,7 @@
       "lng": -157.86,
       "country": "US",
       "status": "active",
-      "z_sq": 1.25
+      "z_sq": 1.21
     },
     {
       "id": 143,
@@ -1143,7 +1143,7 @@
       "lng": -104.99,
       "country": "US",
       "status": "active",
-      "z_sq": 0
+      "z_sq": 0.96
     },
     {
       "id": 144,
@@ -1152,7 +1152,7 @@
       "lng": -79.38,
       "country": "CA",
       "status": "active",
-      "z_sq": 0.34
+      "z_sq": 1.26
     },
     {
       "id": 145,
@@ -1160,8 +1160,8 @@
       "lat": 64.15,
       "lng": -21.94,
       "country": "IS",
-      "status": "offline",
-      "z_sq": 0
+      "status": "active",
+      "z_sq": 1.52
     },
     {
       "id": 146,
@@ -1170,7 +1170,7 @@
       "lng": 36.82,
       "country": "KE",
       "status": "active",
-      "z_sq": 2.24
+      "z_sq": 1.02
     }
   ],
   "notable_events": [
